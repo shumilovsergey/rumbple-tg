@@ -9,17 +9,28 @@ class Chats(models.Model):
         unique=True
     )
 
-    last_callback = models.CharField(
-        verbose_name="Последний callback",
+    first_name = models.CharField(
+        verbose_name="Имя пользователя", 
+        default= "Нет информации",
         max_length=56,
-        default="none"
+    )
+    last_name = models.CharField(
+        verbose_name="Фамилия пользователя", 
+        default= "Нет информации",
+        max_length=56,
     )
 
-    last_id = models.CharField(
-        verbose_name="Последний callback ID",
+    username = models.CharField(
+        verbose_name="Имя аккаунта TG", 
+        default= "Нет информации",
         max_length=56,
-        default="none"
     )
+
+    time_date = models.DateTimeField(
+        verbose_name='Время и дата первого запроса',
+        default=timezone.now
+    )
+
     
     def __str__(self):
         return self.chat_id
@@ -62,7 +73,7 @@ class Files(models.Model):
     name= models.CharField(
         verbose_name="Название", 
         max_length=56, 
-        default="История без названия"
+        default="Файл без названия"
     )
 
     artist = models.ForeignKey(
@@ -88,8 +99,8 @@ class Files(models.Model):
     def __str__(self):
         return self.name
     class Meta:
-        verbose_name = 'История'
-        verbose_name_plural = 'Истории'
+        verbose_name = 'Файл'
+        verbose_name_plural = 'Файлы'
 
 class Moderators(models.Model):
     chat_id = models.CharField(
@@ -108,14 +119,37 @@ class Moderators(models.Model):
     last_callback = models.CharField(
         verbose_name="Последний callback",
         max_length=56,
-        default="none"
+        default= {"callback":"none"}
     )
 
     last_id = models.CharField(
         verbose_name="Последний callback ID",
         max_length=56,
-        default="none"
+        default= {"callback":"none"}
     )
+
+    first_name = models.CharField(
+        verbose_name="Имя пользователя", 
+        default= "Нет информации",
+        max_length=56,
+    )
+    last_name = models.CharField(
+        verbose_name="Фамилия пользователя", 
+        default= "Нет информации",
+        max_length=56,
+    )
+
+    username = models.CharField(
+        verbose_name="Имя аккаунта TG", 
+        default= "Нет информации",
+        max_length=56,
+    )
+
+    time_date = models.DateTimeField(
+        verbose_name='Время и дата первого запроса',
+        default=timezone.now
+    )
+
     def __str__(self):
         return self.name
     

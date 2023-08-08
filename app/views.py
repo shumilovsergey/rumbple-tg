@@ -19,19 +19,22 @@ from telebot.types import Update
 MENU_BUTTON = {
         "inline_keyboard" :  [
             [
-                {'text': 'Меню', 'callback_data': 'menu/'}
+                {'text': 'Меню', 'callback_data': 'menu'}
             ]
         ]
     }
 
+
+JSON = str({"test":'{"qq":"23e"}'})
+
 MAIN_MENU = {
     "inline_keyboard" :  [
         [
-            {'text': 'Прослушать историю', 'callback_data': 'menu_play/'}
+            {'text': 'Озвучки', 'callback_data': JSON}
         ],
         [
-            {'text': 'Записать историю', 'callback_data': 'menu_record/'}
-        ]
+            {'text': 'Каналы и соц сети', 'callback_data': 'info'}
+        ],
     ]
 }
 
@@ -47,10 +50,12 @@ def webhook(request):
 
         if format == "callback":
             callback_query = update.callback_query
-            chat_id = callback_query.from_user.id
+            # callback_data = json.loads(callback_query.data)
+            callback_data = callback_query.data
+            print(callback_data["test"])
         else:
             message = update.message
-            chat_id = message.chat.id
+            # chat_id = message.chat.id
             
 #############################################################
         if format == "text":
@@ -70,9 +75,10 @@ def webhook(request):
             # rout_audio(message)
         
         elif format == "callback":
-            pass
-            # if callback_text(callback_query) == "menu_add/":
-            #     callback_menu_add(callback_query)
+            
+
+            if callback_query.data == "menu":
+                callback_menu(callback_query)
  
         
     return JsonResponse({'status': 'ok'})
@@ -81,19 +87,18 @@ def webhook(request):
 #############################################################
 
 def rout_start(message):
-    chat_id = message.chat.id
-    message_id = message.message_id
 
-    new_chat = Chats(
-        chat_id=chat_id,
-        last_callback = "none/",
-        last_id = "none/"
+    new_chat = Chats(   
+        chat_id= message.chat.id,
+        first_name= message.chat.first_name,
+        last_name= message.chat.last_name,
+        username= message.chat.username
     )
     new_chat.save()
 
-    text = " Главное  Меню "
+    text = " Главное  Меню "    
     keyboard = MAIN_MENU
-    message_send(text=text, keyboard=keyboard, chat_id=chat_id)
+    message_send(text=text, keyboard=keyboard, chat_id=message.chat.id)
     return
 
 def rout_chat_id(message):
@@ -106,21 +111,12 @@ def rout_chat_id(message):
     bot.delete_message(chat_id, message_id)
     return
 
-def rout_add(message):
+def rout_add(message): 
     chat_id = message.chat.id
     message_id = message.message_id
 
     if auth(chat_id):
-        if Janras.objects.count() > 0:
-            text = "Какой жанр истории хотите загрузить?"
-            group_number = "1"
-            keyboard = keyboard_add(group_number)
-            message_send(chat_id=chat_id, keyboard=keyboard, text=text)
-        
-        else:
-            text = "Жанры историй еще не добавлены"
-            bot.send_message(chat_id, text)
-
+        pass
     bot.delete_message(chat_id, message_id)
     return
 
@@ -153,40 +149,7 @@ def callback_menu(callback_query):
     message_send(chat_id=chat_id, text=text, keyboard=keyboard)
     bot.delete_message(chat_id, message_id)
 
-def callback_menu_play(callback_query):
-    message_id = callback_query.message.message_id
-    chat_id = callback_query.message.chat.id
 
-    if Janras.objects.count() > 0:
-        text = "Какой жанр истории хотите послушать?"
-        group_number = "1"
-        keyboard = keyboard_get(group_number)
-        message_send(chat_id=chat_id, keyboard=keyboard, text=text)
-    
-    else:
-        text = "Жанров еще нет :("
-        message_send(chat_id=chat_id, text=text, keyboard=MENU_BUTTON)
-
-    bot.delete_message(chat_id, message_id)
-    return
-
-def callback_menu_get_group_up(callback_query):
-    message_id = callback_query.message.message_id
-    chat_id = callback_query.message.chat.id
-    group_number = callback_number(callback_query)
-    keyboard = keyboard_get(group_number)
-    text = "Какой жанр истории хотите выбрать?"
-    message_edit(chat_id=chat_id, text=text, keyboard=keyboard, message_id=message_id)
-    return
-
-def callback_menu_add_group_up(callback_query):
-    message_id = callback_query.message.message_id
-    chat_id = callback_query.message.chat.id
-    group_number = int(callback_number(callback_query))
-    keyboard = keyboard_add(group_number)
-    text = "Какой жанр истории хотите загрузить?"
-    message_edit(chat_id=chat_id, text=text, keyboard=keyboard, message_id=message_id)
-    return
 
 #############################################################
 def update_parser(request):
@@ -238,18 +201,6 @@ def format_message(update):
     print(type_message)###<<<###
     return type_message
 
-def callback_text(callback_query):
-    callback = callback_query.data
-    string = callback.split("/")
-    text = string[0] + "/"
-    return text
-
-def callback_number(callback_query):
-    numbers_list = re.findall(r'\d+', callback_query.data)
-    number = ''.join(numbers_list)
-    return number   
-
-
 def auth(chat_id):
     status = False
     try:
@@ -259,7 +210,6 @@ def auth(chat_id):
         pass
     return status    
 
-#######################
 def message_send(chat_id, text, keyboard):
     data = { 
         "chat_id": chat_id,
