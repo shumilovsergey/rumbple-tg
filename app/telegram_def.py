@@ -94,13 +94,13 @@ def message_edit(chat_id, message_id, text, keyboard):
     response = requests.post(f"https://api.telegram.org/bot{TOKEN}/editMessageText", data)
     return response
 
-def is_it_sql(callback_query):
-    json_sql = False
+def callback_json(callback_query):
+    callback_json = False
     try:
-        json_sql = json.loads(callback_query.data)  
+        callback_json = json.loads(callback_query.data)  
     except:
         pass
-    return json_sql
+    return callback_json
 
 
 
