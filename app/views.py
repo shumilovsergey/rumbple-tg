@@ -25,12 +25,12 @@ MENU_BUTTON = {
     }
 
 
-JSON = str({"test":'{"qq":"23e"}'})
+
 
 MAIN_MENU = {
     "inline_keyboard" :  [
         [
-            {'text': 'Озвучки', 'callback_data': JSON}
+            {'text': 'Озвучки', 'callback_data':'{"group":"1"}'}
         ],
         [
             {'text': 'Каналы и соц сети', 'callback_data': 'info'}
@@ -50,9 +50,8 @@ def webhook(request):
 
         if format == "callback":
             callback_query = update.callback_query
-            # callback_data = json.loads(callback_query.data)
-            callback_data = callback_query.data
-            print(callback_data["test"])
+            callback_data = json.loads(callback_query.data)
+            print(callback_data.get("janr"))
         else:
             message = update.message
             # chat_id = message.chat.id
@@ -121,26 +120,6 @@ def rout_add(message):
     return
 
 #############################################################
-def callback_menu_add(callback_query):
-    janra_id = callback_number(callback_query)
-    message_id = callback_query.message.message_id
-    chat_id = callback_query.message.chat.id
-    callback = callback_query.data
-
-    # bot.delete_message(chat_id, message_id)
-    try:
-        janra = Janras.objects.get(id=janra_id)
-        user = Chats.objects.get(chat_id=chat_id)
-        user.last_callback = callback
-        user.last_id = chat_id
-        user.save()
-
-        text = "Отлично! Теперь отправьте мне озвученную историю!"
-    except:
-        text = "Ошибка! Жанр был удален, попробуйте еще раз ввести команду /add"
-    bot.edit_message_text(text=text, chat_id=chat_id, message_id=message_id)
-    return
-
 def callback_menu(callback_query):
     message_id = callback_query.message.message_id
     chat_id = callback_query.message.chat.id
