@@ -1,7 +1,7 @@
 from .telegram_def import callback_json
 from .keyboards import main_menu
 from .keyboards import menu_button
-from .telegram_def import message_send
+from .keyboards import sql_keyboard
 from .telegram_def import message_edit
 import telebot
 from project.const import TOKEN
@@ -44,5 +44,10 @@ def info(callback):
     return
 
 def janra_menu(callback):
-
+    message_edit(
+        text= "Выбор жанра",
+        message_id= callback.get("message_id"),
+        chat_id= callback.get("chat_id"),
+        keyboard= sql_keyboard(callback)
+    )
     return

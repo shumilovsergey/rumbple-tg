@@ -57,7 +57,7 @@ class Artists(models.Model):
         max_length=56, 
     )
 
-    janra = models.ForeignKey(
+    foreign_key = models.ForeignKey(
         Janras,
         on_delete= models.CASCADE
     )  
@@ -76,7 +76,7 @@ class Files(models.Model):
         default="Файл без названия"
     )
 
-    artist = models.ForeignKey(
+    foreign_key = models.ForeignKey(
         Artists,
         on_delete= models.CASCADE
     )
