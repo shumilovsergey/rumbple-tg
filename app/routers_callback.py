@@ -23,6 +23,12 @@ def routers_callback(callback_query):
 
     if data.get("sql") == "get" and data.get("janra") == "?":
         janra_menu(callback) 
+
+    if data.get("sql") == "get" and data.get("artist") == "?":
+        artist_menu(callback) 
+
+    if data.get("sql") == "get" and data.get("file") == "?":
+        file_menu(callback) 
 ###
 
 def menu(callback):
@@ -46,6 +52,24 @@ def info(callback):
 def janra_menu(callback):
     message_edit(
         text= "Выбор жанра",
+        message_id= callback.get("message_id"),
+        chat_id= callback.get("chat_id"),
+        keyboard= sql_keyboard(callback)
+    )
+    return
+
+def artist_menu(callback):
+    message_edit(
+        text= "Выбор исполнителя",
+        message_id= callback.get("message_id"),
+        chat_id= callback.get("chat_id"),
+        keyboard= sql_keyboard(callback)
+    )
+    return
+
+def file_menu(callback):
+    message_edit(
+        text= "Выбор произведения",
         message_id= callback.get("message_id"),
         chat_id= callback.get("chat_id"),
         keyboard= sql_keyboard(callback)
