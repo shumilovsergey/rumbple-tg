@@ -7,10 +7,9 @@ def main_menu():
     data = {
         "sql":"get",
         "g":"1",
-        "janra":"?"
-
+        "janra":"?",
+        "f":"-"
     }
-
     keyboard = {
     "inline_keyboard" :  [
         [
@@ -24,64 +23,38 @@ def main_menu():
     return keyboard
 
 def menu_button():
-
-    
     keyboard= {
         "inline_keyboard" :  [
             [
-                {'text': 'Меню', 'callback_data': json.dumps({"menu":"menu"})}
+                {'text': '◀', 'callback_data': json.dumps({"menu":"menu"})}
             ]
         ]
     }
-
     return keyboard
 
-def sql_keyboard(callback):
-
-    method = "???"  ###????
-    group = "???"   ###????
-    if group > 1:
-        back_button = "???" ###????
-    else:
-        back_button = "???" ###????
-
-    
-    all_elements = "???"    ###????
-    element_count = int(len(all_elements))
+def sql_keyboard(method, group, all_elements, next_key, navigation):
     first_element_number = (6*(group - 1)) + 1
-    amount = element_count - ( 6*group )
+    last_element_counter = (6*group)+1
     count = 1
     array = []
- 
-    if amount <= 0:#last group
-        for element in all_elements:
-            if count >= first_element_number:
+
+    for element in all_elements:
+        if count >= first_element_number:
+            if count < last_element_counter:
                 model = element
                 model_id = model.id
                 model_name = model.name
-                array_element = [{'text': model_name, 'callback_data': "???" }] ###????
-                array.append(array_element)
-            count += 1 
 
-        navigation = [
-            {'text': "◀", 'callback_data': json.dumps(back_button)}
-        ]       
-    else:#not last group
-        for element in all_elements:
-            last_element_counter = (6*group)+1
-            if count >= first_element_number:
-                if count < last_element_counter:
-                    model = element
-                    model_id = model.id
-                    model_name = model.name
-                    array_element = [{'text': model_name, 'callback_data': "???"}] ###????
-                    array.append(array_element)
-            count += 1
-        next_group = group + 1
-        navigation = [
-            {'text': "◀", 'callback_data': json.dumps(back_button)},
-            {'text': "▶", 'callback_data': "???"}   ###????
-        ]
+                data = {
+                    "sql":method,
+                    "f":model_id,
+                    "g":"1",
+                    next_key:"?"
+                }
+
+                array_element = [{'text': model_name, 'callback_data':json.dumps(data)}] 
+                array.append(array_element)
+        count += 1
 
     array.append(navigation)
     keyboard = {
