@@ -3,6 +3,7 @@ from .keyboards import main_menu
 from .keyboards import menu_button
 from .keyboards import sql_keyboard
 from .telegram_def import message_edit
+from .telegram_def import message_send
 import telebot
 from project.const import TOKEN
 from .models import Janras
@@ -158,7 +159,7 @@ def artist_menu(callback):
         "method":method
     }
     message_edit(
-        text= "Выбор исполнителя",
+        text= "Жанр - " + janra.name,
         message_id= callback.get("message_id"),
         chat_id= callback.get("chat_id"),
         keyboard= sql_keyboard(**kwargs)
@@ -178,7 +179,9 @@ def file_menu(callback):
     element_count = int(len(all_elements))
     amount = element_count - ( 6*group )
 
-
+    artist = Artists.objects.get(id=filter)
+    janra = artist.janra
+    
     if group > 1:
         back_button = {
             "sql": method,
@@ -191,7 +194,7 @@ def file_menu(callback):
             "sql":"get",
             "g":"1",
             "artist":"?",
-            "f": filter
+            "f": janra.id
         }
 
 
@@ -217,7 +220,7 @@ def file_menu(callback):
         "method":method
     }
     message_edit(
-        text= "Выбор произведения",
+        text= artist.name,
         message_id= callback.get("message_id"),
         chat_id= callback.get("chat_id"),
         keyboard= sql_keyboard(**kwargs)
@@ -225,4 +228,21 @@ def file_menu(callback):
     return
 
 def file_get(callback):
+    bot.delete_message(
+        chat_id=callback["chat_id"],
+        message_id=callback["message_id"]
+    )
+
+    file = Files.objects.get(id=callback["data"]["f"])
+    bot.send_audio(
+        chat_id=callback["chat_id"],
+        audio=file.tg_id
+    )
+    
+    message_send(
+        chat_id=callback["chat_id"],
+        text = " Главное  Меню ",
+        keyboard=main_menu()
+    )
+    
     return
