@@ -6,8 +6,11 @@ services:
       dockerfile: Dockerfile
     ports:
       - "5002:5002"
+    restart: always
+    container_name: "rumble-tg"
     volumes:
-      - django_volume:/app
+      - rumble_volume:/app
+
 
 volumes:
-  django_volume:
+  rumble_volume:

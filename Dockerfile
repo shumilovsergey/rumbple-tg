@@ -5,7 +5,6 @@ FROM python:3.9
 # Set environment variables
 ENV PYTHONUNBUFFERED=1
 
-
 # Set working directory
 WORKDIR /app
 

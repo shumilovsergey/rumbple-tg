@@ -24,11 +24,26 @@ def routers_text(message):
 
 def rout_start(message):
 
+    try:
+        first_name = message.chat.first_name
+    except:
+        first_name = "none"
+
+    try:
+        last_name = message.chat.last_name
+    except:
+        last_name = "none"
+
+    try:
+        username= message.chat.username
+    except:
+        username = "none"
+
     new_chat = Chats(   
         chat_id= message.chat.id,
-        first_name= message.chat.first_name,
-        last_name= message.chat.last_name,
-        username= message.chat.username
+        first_name= first_name,
+        last_name= last_name,
+        username= username
     )
     new_chat.save()
 
