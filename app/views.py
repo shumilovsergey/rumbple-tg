@@ -4,27 +4,28 @@ from .telegram_def import format_message
 from .routers_text import routers_text
 from .routers_callback import routers_callback
 from .routers_audio import routers_audio
+from .models import Logs
 
 @csrf_exempt
 def webhook(request):
     if request.method == 'POST':
-        
-        format = format_message(request)
+        message = format_message(request)
 
-#         if format == "callback":
-#             callback_query = update.callback_query
-#         else:
-#             message = update.message
-# ###################################################
+        if "text" in message:
+            routers_text(message)
 
-#         if format == "text":
-#             routers_text(message)
+        elif "callback" in message:
+            routers_callback(message)
 
-#         elif format == "audio":   #MODERATOR
-#             routers_audio(message)
-                  
-#         elif format == "callback":
-#             routers_callback(callback_query)
+        elif "audio" in message:
+            routers_audio(message)
+
+        else:
+            report = Logs(
+                def_name = "webhook",
+                text = message
+            )
+            report.save()
 
     return JsonResponse({'status': 'ok'})
 

@@ -20,7 +20,7 @@ class Chats(models.Model):
         max_length=56,
     )
 
-    username = models.CharField(
+    user_name = models.CharField(
         verbose_name="Имя аккаунта TG", 
         default= "Нет информации",
         max_length=56,
@@ -174,7 +174,7 @@ class Logs(models.Model):
 
 
     def __str__(self):
-        return self.def_name
+        return self.time_date
     
     class Meta:
         verbose_name = 'Логи'

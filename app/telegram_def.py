@@ -23,27 +23,28 @@ def format_message(request):
 
     if "message" in data:
         data = data["message"]
-
         if "text" in data:
-            # type = "message"
-            # chat_id = 
-            # text = 
-            # user_name = 
-            # message_id = 
-            pass
-        else:
+            message = {
+                "chat_id" : data["chat"]["id"],
+                "text" : data["text"],
+                "message_id" : data["message_id"],
+                "user_info" : data["chat"],
+            }
+            
 
+
+        else:
             report = True
 
     elif "callback_query" in data:
         data = data["callback_query"]
         if "data" in data:
-            type = "callback"
-            chat_id = data["from"]["chat_id"]
-            message_id = data["message"]["message_id"]
-            data = data["data"]
-
-
+            message = {
+                "chat_id" : data["message"]["chat"]["id"],
+                "message_id" : data["message"]["message_id"],
+                "callback" : data["data"],
+            }
+            
     else:
         report = True
 
@@ -54,8 +55,9 @@ def format_message(request):
             text = data
         )
         report.save()
-
-    return data
+        print("LOGS!")
+        message = {}
+    return message
 
 def auth(chat_id):
     status = False

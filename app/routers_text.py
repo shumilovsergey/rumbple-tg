@@ -4,14 +4,18 @@ from .keyboards import main_menu
 from .keyboards import menu_button
 from .telegram_def import message_send
 from .telegram_def import auth
-import telebot
 from project.const import TOKEN
-bot = telebot.TeleBot(TOKEN)
+from .telegram_def import json_dict
+
+
 
 
 def routers_text(message):
+    message=json_dict(message)
+
     if message.text == "/start":
         rout_start(message)
+
 
     elif message.text == "/chat_id":
         rout_chat_id(message)
@@ -23,33 +27,33 @@ def routers_text(message):
 #############################################
 
 def rout_start(message):
+    user = message.user_info
+    if "username" in user:
+        user_name = user["username"]
+    else:
+        user_name = "None"
 
-    try:
-        first_name = message.chat.first_name
-    except:
-        first_name = "none"
+    if "last_name" in user:
+        last_name = user["last_name"]
+    else:
+        last_name = "None"
 
-    try:
-        last_name = message.chat.last_name
-    except:
-        last_name = "none"
-
-    try:
-        username= message.chat.username
-    except:
-        username = "none"
+    if "first_name" in user:
+        first_name = user["first_name"]
+    else:
+        first_name = "None"
 
     new_chat = Chats(   
-        chat_id= message.chat.id,
+        chat_id= message.chat_id,
         first_name= first_name,
         last_name= last_name,
-        username= username
+        user_name= user_name
     )
     new_chat.save()
 
     text = " Главное  Меню "    
     keyboard = main_menu()
-    message_send(text=text, keyboard=keyboard, chat_id=message.chat.id)
+    message_send(text=text, keyboard=keyboard, chat_id=message.chat_id)
     return
 
 def rout_chat_id(message):
