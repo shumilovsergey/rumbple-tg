@@ -2,57 +2,60 @@ import json
 from .models import Moderators
 import requests
 from project.const import TOKEN
-from telebot.types import Update
+from .models import Logs
 
 
-def update_parser(request):
-    json_str = request.body.decode('UTF-8')
-    update = Update.de_json(json_str)
-    print(update)
-    return update
 
-def format_message(update):
 
-    status = True
-    type_message = "None"
 
-    if status:
-        if str(update.callback_query) != "None" and status:
-            type_message = "callback"
-            status = False 
-    if status:
-        if str(update.message.content_type) == "text":
-            type_message = "text"
-            status = False
 
-    if status:
-        if str(update.message.content_type) == "voice":
-            type_message = "voice"
-            status = False
-    if status:
-        if str(update.message.content_type) == "photo":
-            type_message = "photo"
-            status = False
-    if status:
-        if str(update.message.content_type) == "audio":
-            type_message = "audio"
-            status = False
-    if status:
-        if str(update.message.content_type) == "video_note":
-            type_message = "video_note"
-            status = False
-    if status:
-        if str(update.message.content_type) == "video":
-            type_message = "video"
-            status = False
-    if status:
-        if str(update.message.content_type) == "document":
-            type_message = "document"
-            status = False
+class json_dict:
+    def __init__(self, data):
+        self.data = data   
 
- 
-    print(type_message)###<<<###
-    return type_message
+    def __getattr__(self, item):
+        return self.data.get(item, "none")
+
+
+def format_message(request):
+    data = json.loads(request.body.decode('utf-8'))
+    report = False
+
+    if "message" in data:
+        data = data["message"]
+
+        if "text" in data:
+            # type = "message"
+            # chat_id = 
+            # text = 
+            # user_name = 
+            # message_id = 
+            pass
+        else:
+
+            report = True
+
+    elif "callback_query" in data:
+        data = data["callback_query"]
+        if "data" in data:
+            type = "callback"
+            chat_id = data["from"]["chat_id"]
+            message_id = data["message"]["message_id"]
+            data = data["data"]
+
+
+    else:
+        report = True
+
+##############
+    if report:
+        report = Logs(
+            def_name = "format_message",
+            text = data
+        )
+        report.save()
+
+    return data
 
 def auth(chat_id):
     status = False

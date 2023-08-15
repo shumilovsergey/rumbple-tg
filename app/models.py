@@ -157,3 +157,25 @@ class Moderators(models.Model):
         verbose_name = 'Модератор'
         verbose_name_plural = 'Модераторы'
 
+class Logs(models.Model):
+    def_name = models.CharField(
+        verbose_name="Имя функции",
+        max_length=56,
+    )
+
+    time_date = models.DateTimeField(
+        verbose_name='Время и дата',
+        default=timezone.now
+    )
+
+    text = models.TextField(
+        verbose_name="текст логов"
+    )
+
+
+    def __str__(self):
+        return self.def_name
+    
+    class Meta:
+        verbose_name = 'Логи'
+        verbose_name_plural = 'Логи'
