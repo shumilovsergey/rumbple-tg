@@ -174,7 +174,7 @@ class Logs(models.Model):
 
 
     def __str__(self):
-        return self.time_date
+        return self.def_name
     
     class Meta:
         verbose_name = 'Логи'

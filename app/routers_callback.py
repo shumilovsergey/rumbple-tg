@@ -4,64 +4,60 @@ from .keyboards import menu_button
 from .keyboards import sql_keyboard
 from .telegram_def import message_edit
 from .telegram_def import message_send
-import telebot
-from project.const import TOKEN
+from .telegram_def import message_delete
+from .telegram_def import audio_send
 from .models import Janras
 from .models import Files
 from .models import Artists
-bot = telebot.TeleBot(TOKEN)
+
 import json
 
-def routers_callback(callback_query):
-    data = callback_json(callback_query)
-    callback = {
-        "chat_id": callback_query.message.chat.id,
-        "message_id": callback_query.message.message_id,
-        "data": data
-    }
+def routers_callback(message):
+    callback = callback_json(message["callback"])
+    message["callback"] = callback
 
-    if data.get("menu") == "menu":
-        menu(callback)
+    if message["callback"].get("menu") == "menu":
+        menu(message)
 
-    elif data.get("info") == "info":
-        info(callback) 
+    elif message["callback"].get("info") == "info":
+        info(message) 
 
-    elif data.get("janra") == "?":
-        janra_menu(callback) 
+    elif message["callback"].get("janra") == "?":
+        janra_menu(message) 
 
-    elif data.get("artist") == "?":
-        artist_menu(callback) 
+    elif message["callback"].get("artist") == "?":
+        artist_menu(message) 
 
-    elif data.get("file") == "?":
-        file_menu(callback) 
+    elif message["callback"].get("file") == "?":
+        file_menu(message) 
 
-    elif data.get("file_get") == "?":
-        file_get(callback)
+    elif message["callback"].get("file_get") == "?":
+        file_get(message)
 ###
 
-def menu(callback):
+def menu(message):
     message_edit(
         text= "Главное  Меню",
-        message_id= callback.get("message_id"),
-        chat_id= callback.get("chat_id"),
+        message_id= message["message_id"],
+        chat_id= message["chat_id"],
         keyboard= main_menu()
     )
     return
 
-def info(callback):
+def info(message):
     message_edit(
         text= "Тут могут быть всякие полезные ссылки",
-        message_id= callback.get("message_id"),
-        chat_id= callback.get("chat_id"),
+        message_id= message["message_id"],
+        chat_id= message["chat_id"],
         keyboard= menu_button()
     )
     return
 
-def janra_menu(callback):
+def janra_menu(message):
     next_key = "artist" #HARDKODING! 
 
-    method = callback["data"]["sql"]
-    group = int(callback["data"]["g"])
+    method = message["callback"]["sql"]
+    group = int(message["callback"]["g"])
     
     all_elements = Janras.objects.all()
     element_count = int(len(all_elements))
@@ -101,18 +97,18 @@ def janra_menu(callback):
     }
     message_edit(
         text= "Выбор жанра",
-        message_id= callback.get("message_id"),
-        chat_id= callback.get("chat_id"),
+        message_id= message["message_id"],
+        chat_id= message["chat_id"],
         keyboard= sql_keyboard(**kwargs)
     )
     return
 
-def artist_menu(callback):
+def artist_menu(message):
     next_key = "file" #HARDKODING! 
 
-    method = callback["data"]["sql"]
-    group = int(callback["data"]["g"])
-    filter = callback["data"]["f"]
+    method = message["callback"]["sql"]
+    group = int(message["callback"]["g"])
+    filter = message["callback"]["f"]
     
     janra = Janras.objects.get(id=filter)
     all_elements = Artists.objects.filter(janra=janra)
@@ -160,18 +156,18 @@ def artist_menu(callback):
     }
     message_edit(
         text= "Жанр - " + janra.name,
-        message_id= callback.get("message_id"),
-        chat_id= callback.get("chat_id"),
+        message_id= message["message_id"],
+        chat_id= message["chat_id"],
         keyboard= sql_keyboard(**kwargs)
     )
     return
 
-def file_menu(callback):
+def file_menu(message):
     next_key = "file_get" #HARDKODING! 
 
-    method = callback["data"]["sql"]
-    group = int(callback["data"]["g"])
-    filter = callback["data"]["f"]
+    method = message["callback"]["sql"]
+    group = int(message["callback"]["g"])
+    filter = message["callback"]["f"]
     
     artist = Artists.objects.get(id=filter)
     all_elements = Files.objects.filter(artist=artist)
@@ -221,26 +217,29 @@ def file_menu(callback):
     }
     message_edit(
         text= artist.name,
-        message_id= callback.get("message_id"),
-        chat_id= callback.get("chat_id"),
+        message_id= message["message_id"],
+        chat_id= message["chat_id"],
         keyboard= sql_keyboard(**kwargs)
     )
     return
 
-def file_get(callback):
-    bot.delete_message(
-        chat_id=callback["chat_id"],
-        message_id=callback["message_id"]
+def file_get(message):
+    message_delete(
+        chat_id=message["chat_id"],
+        message_id=message["message_id"]
     )
 
-    file = Files.objects.get(id=callback["data"]["f"])
-    bot.send_audio(
-        chat_id=callback["chat_id"],
-        audio=file.tg_id
+    file = Files.objects.get(id=message["callback"]["f"])
+    audio_send(
+        text ="",
+        chat_id=message["chat_id"],
+        audio_id=file.tg_id,
+        keyboard={}
+
     )
     
     message_send(
-        chat_id=callback["chat_id"],
+        chat_id=message["chat_id"],
         text = " Главное  Меню ",
         keyboard=main_menu()
     )

@@ -17,7 +17,7 @@ def webhook(request):
         elif "callback" in message:
             routers_callback(message)
 
-        elif "audio" in message:
+        elif "audio_id" in message:
             routers_audio(message)
 
         else:

@@ -4,11 +4,6 @@ import requests
 from project.const import TOKEN
 from .models import Logs
 
-
-
-
-
-
 class json_dict:
     def __init__(self, data):
         self.data = data   
@@ -16,8 +11,8 @@ class json_dict:
     def __getattr__(self, item):
         return self.data.get(item, "none")
 
-
 def format_message(request):
+    message = {}
     data = json.loads(request.body.decode('utf-8'))
     report = False
 
@@ -31,7 +26,13 @@ def format_message(request):
                 "user_info" : data["chat"],
             }
             
-
+        elif "audio" in data:
+            message = {
+                "chat_id" : data["chat"]["id"],
+                "audio_id" : data["audio"]["file_id"],
+                "audio_name" : data["audio"]["file_name"],
+                "message_id" : data["message_id"],
+            }           
 
         else:
             report = True
@@ -56,7 +57,6 @@ def format_message(request):
         )
         report.save()
         print("LOGS!")
-        message = {}
     return message
 
 def auth(chat_id):
@@ -102,12 +102,18 @@ def message_edit(chat_id, message_id, text, keyboard):
 def callback_json(callback_query):
     callback_json = False
     try:
-        callback_json = json.loads(callback_query.data)  
+        callback_json = json.loads(callback_query)  
     except:
         pass
     return callback_json
 
-
+def message_delete(chat_id, message_id):
+    data = {
+        "chat_id": chat_id,
+        "message_id" : message_id
+    }
+    response = requests.post(f"https://api.telegram.org/bot{TOKEN}/deleteMessage", data)
+    return response
 
 
 
