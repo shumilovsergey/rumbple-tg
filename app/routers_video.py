@@ -4,11 +4,11 @@ from .telegram_def import message_delete
 
 
 
-def routers_audio(message):
+def routers_video(message):
 
     if auth(message["chat_id"]):
         message_send(
-            text= message["audio_id"] + "\n" + message["audio_name"],
+            text= message["file_id"] + "\n" + message["file_name"],
             chat_id= message["chat_id"],
             keyboard={}
         )

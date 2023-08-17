@@ -4,6 +4,7 @@ from .telegram_def import format_message
 from .routers_text import routers_text
 from .routers_callback import routers_callback
 from .routers_audio import routers_audio
+from .routers_video import routers_video
 from .models import Logs
 
 @csrf_exempt
@@ -19,6 +20,9 @@ def webhook(request):
 
         elif "audio_id" in message:
             routers_audio(message)
+
+        elif "video_id" in message:
+            routers_video(message)
 
         else:
             report = Logs(

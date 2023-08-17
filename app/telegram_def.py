@@ -32,8 +32,15 @@ def format_message(request):
                 "audio_id" : data["audio"]["file_id"],
                 "audio_name" : data["audio"]["file_name"],
                 "message_id" : data["message_id"],
-            }           
+            }      
 
+        elif "video" in data:
+            message = {
+                "chat_id" : data["chat"]["id"],
+                "audio_id" : data["video"]["file_id"],
+                "audio_name" : data["video"]["file_name"],
+                "message_id" : data["message_id"],
+            }     
         else:
             report = True
 

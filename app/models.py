@@ -48,8 +48,8 @@ class Janras(models.Model):
     def __str__(self):
         return self.name
     class Meta:
-        verbose_name = 'Жанр'
-        verbose_name_plural = 'Жанры'
+        verbose_name = 'Аудио Жанр'
+        verbose_name_plural = 'Аудио Жанры'
 
 class Artists(models.Model):
     name = models.CharField(
@@ -65,8 +65,8 @@ class Artists(models.Model):
     def __str__(self):
         return self.name
     class Meta:
-        verbose_name = 'Исполнитель'
-        verbose_name_plural = 'Исполнители'
+        verbose_name = 'Аудио Исполнитель'
+        verbose_name_plural = 'Аудио Исполнители'
 
 class Files(models.Model):
 
@@ -99,8 +99,8 @@ class Files(models.Model):
     def __str__(self):
         return self.name
     class Meta:
-        verbose_name = 'Файл'
-        verbose_name_plural = 'Файлы'
+        verbose_name = 'Аудио Файл'
+        verbose_name_plural = 'Аудио Файлы'
 
 class Moderators(models.Model):
     chat_id = models.CharField(
@@ -179,3 +179,67 @@ class Logs(models.Model):
     class Meta:
         verbose_name = 'Логи'
         verbose_name_plural = 'Логи'
+
+
+class VideoJanras(models.Model):
+    name = models.CharField(
+        verbose_name="Название жанра", 
+        max_length=56, 
+    )  
+
+    def __str__(self):
+        return self.name
+    class Meta:
+        verbose_name = 'Видео Жанр'
+        verbose_name_plural = 'Видео Жанры'
+
+class VideoArtists(models.Model):
+    name = models.CharField(
+        verbose_name="Исполнитель", 
+        max_length=56, 
+    )
+
+    janra = models.ForeignKey(
+        VideoJanras,
+        on_delete= models.CASCADE
+    )  
+
+    def __str__(self):
+        return self.name
+    class Meta:
+        verbose_name = 'Видео Исполнитель'
+        verbose_name_plural = 'Видео Исполнители'
+
+class VideoFiles(models.Model):
+
+    name= models.CharField(
+        verbose_name="Название", 
+        max_length=56, 
+        default="Файл без названия"
+    )
+
+    artist = models.ForeignKey(
+        VideoArtists,
+        on_delete= models.CASCADE
+    )
+
+    tg_id = models.CharField(
+        verbose_name="ID в телеграмме", 
+        max_length=256, 
+    )
+
+    time_date = models.DateTimeField(
+        verbose_name='Время и дата создания',
+        default=timezone.now
+    )
+
+    moderator_id = models.CharField(
+        verbose_name="id модератора", 
+        max_length=56
+    )
+
+    def __str__(self):
+        return self.name
+    class Meta:
+        verbose_name = 'Видео Файл'
+        verbose_name_plural = 'Видео Файлы'

@@ -4,16 +4,27 @@ from .models import Artists
 from .models import Files
 
 def main_menu():
-    data = {
+    audio_data = {
         "sql":"get",
         "g":"1",
-        "janra":"?",
+        "a_janra":"?",
         "f":"-"
     }
+
+    video_data = {
+        "sql":"get",
+        "g":"1",
+        "v_janra":"?",
+        "f":"-"
+    }
+
     keyboard = {
     "inline_keyboard" :  [
         [
-            {'text': 'Озвучки', 'callback_data':json.dumps(data)}
+            {'text': 'Аудио', 'callback_data':json.dumps(audio_data)}
+        ],
+        [
+            {'text': 'Видео', 'callback_data':json.dumps(video_data)}
         ],
         [
             {'text': 'Каналы и соц сети', 'callback_data': json.dumps({"info":"info"})}
