@@ -61,7 +61,7 @@ def menu(message):
 
 def info(message):
     message_edit(
-        text= "Тут могут быть всякие полезные ссылки",
+        text= "Поддержи озвучки: \n• boosty.to/rumble \n• vk.com/donut/rgrumble \n• Сбербанк: 2202202399885767 \n\nПо всем вопросам обращайтесь:\nstudiorumble@gmail.com",
         message_id= message["message_id"],
         chat_id= message["chat_id"],
         keyboard= menu_button()
