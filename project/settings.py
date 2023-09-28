@@ -14,8 +14,16 @@ SECRET_KEY = 'django-insecure-fl!za+f$9cj%-xfm*4bd-d(j6$7^r+f^8)1iz&t8^rv)9y_*%_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
 
+
+
+hosts = ["https://rumble.alplottw.ru", "http://rumble.alplottw.ru"]
+
+CORS_ORIGIN_ALLOW_ALL = True
+CSRF_TRUSTED_ORIGINS = hosts
+ALLOWED_HOSTS = ["*"]
+CORS_ORIGINS_WHITELIST = hosts
+CSRF_ALLOWED_ORIGINS = hosts
 
 # Application definition
 
